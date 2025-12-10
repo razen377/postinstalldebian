@@ -37,7 +37,6 @@ progress_bar 15 "Upgrade du système"
 apt upgrade -y > /dev/null 2>&1
 
 # ÉTAPE 3 : Installation des paquets essentiels (45%)
-# C'est l'étape la plus longue, on laisse un peu de marge
 progress_bar 45 "Installation des paquets essentiels"
 apt install -y ssh zip unzip nmap locate ncdu curl git screen dnsutils net-tools sudo lynx winbind samba > /dev/null 2>&1
 
@@ -45,8 +44,11 @@ apt install -y ssh zip unzip nmap locate ncdu curl git screen dnsutils net-tools
 progress_bar 70 "Installation et configuration du dépôt Webmin"
 # Téléchargement du script de configuration de dépôt
 curl -o webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh > /dev/null 2>&1
-# Exécution du script (ajoute la clé GPG et le dépôt)
-sh webmin-setup-repo.sh > /dev/null 2>&1
+
+# Utilisation de 'yes |' pour simuler la touche Entrée/confirmation
+progress_bar 72 "Exécution du script de dépôt Webmin"
+yes | sh webmin-setup-repo.sh > /dev/null 2>&1
+
 # Mise à jour des listes pour inclure le nouveau dépôt
 apt update > /dev/null 2>&1
 # Installation de Webmin
@@ -76,8 +78,7 @@ echo "" # Saut de ligne final pour ne pas écraser la barre
 # Nettoyage du fichier temporaire
 rm -f webmin-setup-repo.sh
 
-# --- RÉCUPÉRATION DE L'ADRESSE IP POUR L'AFFICHAGE ---
-# hostname -I affiche toutes les IPs. On prend la première (head -n1).
+# --- AFFICHAGE FINAL ---
 SERVER_IP=$(hostname -I | awk '{print $1}')
 
 echo ""
